@@ -1,9 +1,16 @@
+/* eslint-disable */
 import React, { cloneElement } from "react"
 import PropTypes from "prop-types"
 
 //import "./topbar.less"
 import Logo from "./logo_small.png"
 import {parseSearch, serializeSearch} from "../../core/utils"
+
+const list = [
+  ["guide", "http://qa-entguide.saasproj.fenxibao.com/guide/v1/swagger.json"],
+  ["manage", "http://qa-entguide.saasproj.fenxibao.com/manage/v1/swagger.json"],
+  ["job", "http://qa-entguide.saasproj.fenxibao.com/job/v1/swagger.json"]
+]
 
 export default class Topbar extends React.Component {
 
@@ -100,6 +107,11 @@ export default class Topbar extends React.Component {
     this.props.layoutActions.updateFilter(value)
   }
 
+  select = e => {
+    let {target: {value}} = e.target.value;
+    this.setState({url: value})
+  }
+
   render() {
     let { getComponent, specSelectors, getConfigs } = this.props
     const Button = getComponent("Button")
@@ -132,6 +144,20 @@ export default class Topbar extends React.Component {
     }
     else {
       formOnSubmit = this.downloadUrl
+      control.push(
+        <div id="select-json-src"
+              style="width: 100%; max-width: 87.5rem; margin: 0 auto; padding: 0 1.25rem; line-height: 3.75rem;">
+          <label>请选择项目：
+            <select id="dropdown-parent" onChange={this.select} value={this.state.url}>
+            {
+              list.map(item => {
+                return (<option value={item[1]}>item[0]</option>)
+              })
+            }
+            </select>
+          </label>
+        </div>
+      )
       control.push(<input className="download-url-input" type="text" onChange={ this.onUrlChange } value={this.state.url} disabled={isLoading} style={inputStyle} />)
       control.push(<Button className="download-url-button" onClick={ this.downloadUrl }>Explore</Button>)
     }
